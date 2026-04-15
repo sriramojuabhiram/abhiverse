@@ -54,7 +54,7 @@ SIDE PROJECTS:
 • AI Career Agent: Autonomous AI recruiter — 28 microservices, crawls 5 job boards, GPT-4o analysis, auto-generates resumes, auto-applies (FastAPI + Next.js + React Native + PostgreSQL + Qdrant + RabbitMQ + Docker)
 • Venture Builder (AI Startup Factory): Fully autonomous 19-step pipeline — discovers market opportunities, validates ideas, builds MVPs, designs brands, creates pitch decks, deploys products, runs growth hacking, manages portfolio with scale/kill/hold decisions (FastAPI + LM Studio + Qdrant + 11 AI agents)
 • Your AI Buddy: Gamified 30-day AI mastery SaaS — interactive roadmap, AI coach, prompt factory, career hub (resume critique, mock interviews, job matching), app builder, certifications, leaderboard (React + TypeScript + Supabase + Gemini + Groq)
-• Neural Nexus: AI-clone portfolio with 3D planetary navigation (R3F + Claude API + GSAP + TypeScript)
+• Abhiverse: AI-clone portfolio with 3D planetary navigation (R3F + Groq API + GSAP + TypeScript)
 
 PHONE (CONFIDENTIAL):
 My phone number is available upon request. Only share this when someone SPECIFICALLY asks for a phone number or direct contact number. Never volunteer it unprompted.

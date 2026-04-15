@@ -163,7 +163,7 @@ export const planets: PlanetSection[] = [
         { label: 'AI Career Agent', value: 'FastAPI · Next.js · React Native · PostgreSQL · Qdrant · RabbitMQ · Docker · GPT-4o — Autonomous 28-microservice platform that crawls 5 job boards, AI-analyzes listings, generates tailored resumes, and auto-applies' },
         { label: 'Venture Builder (AI Startup Factory)', value: 'FastAPI · LM Studio · Qdrant · Python · Docker — Fully autonomous 19-step pipeline: discovers opportunities, validates ideas, builds MVPs, designs brands, creates pitch decks, deploys products, runs growth hacking, manages portfolio' },
         { label: 'Your AI Buddy', value: 'React · TypeScript · Supabase · Gemini · Groq — Gamified 30-day AI mastery platform with roadmap, AI coach, prompt factory, career hub, mock interviews, app builder, certifications, and leaderboard' },
-        { label: 'Neural Nexus (This Portfolio)', value: 'React Three Fiber · Claude API · GSAP · TypeScript · GLSL — 3D planetary portfolio with AI clone chatbot powered by Groq' },
+        { label: 'Abhiverse (This Portfolio)', value: 'React Three Fiber · Groq API · GSAP · TypeScript · GLSL — 3D planetary portfolio with AI clone chatbot powered by Groq' },
       ],
     },
   },

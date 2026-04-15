@@ -70,7 +70,7 @@ export const PROJECTS: Project[] = [
   { id: 'abp', name: 'Your AI Buddy', status: 'live',
     description: 'Gamified SaaS platform for mastering AI in 30 days — interactive game-map roadmap, AI chat coach, prompt factory, career hub (resume critique, mock interviews, job matching), app builder, certification engine, and public leaderboard.',
     stack: ['React', 'TypeScript', 'Supabase', 'Gemini', 'Groq', 'Tailwind CSS'], color: '#a78bfa' },
-  { id: 'nn', name: 'Neural Nexus', status: 'live',
-    description: 'This portfolio — data-driven 3D planetary visualizations per section with an AI clone chatbot. R3F + Claude API + GSAP + TypeScript.',
-    stack: ['React Three Fiber', 'Claude API', 'GSAP', 'TypeScript', 'GLSL'], color: '#818cf8' },
+  { id: 'av', name: 'Abhiverse', status: 'live',
+    description: 'This portfolio — data-driven 3D planetary visualizations per section with an AI clone chatbot. R3F + Groq API + GSAP + TypeScript.',
+    stack: ['React Three Fiber', 'Groq API', 'GSAP', 'TypeScript', 'GLSL'], color: '#818cf8' },
 ]

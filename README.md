@@ -1,8 +1,8 @@
-# Neural Nexus — 3D Portfolio OS
+# Abhiverse — 3D Portfolio
 
-**Abhiram.S · Senior .NET Full-Stack Developer**
+**Abhiram S. · AI Software Engineer & Agentic Workflow Architect**
 
-A first-person navigable 3D portfolio built with React Three Fiber, featuring a real-time AI clone powered by Claude.
+A first-person navigable 3D portfolio built with React Three Fiber, featuring a real-time AI clone powered by Groq.
 
 ---
 
