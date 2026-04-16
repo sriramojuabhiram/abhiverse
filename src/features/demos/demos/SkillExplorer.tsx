@@ -32,8 +32,9 @@ export default function SkillExplorer() {
 
     const apiKey = import.meta.env.VITE_GROQ_API_KEY as string | undefined
     const model = (import.meta.env.VITE_GROQ_MODEL as string | undefined) ?? 'llama-3.3-70b-versatile'
+    const isProduction = import.meta.env.PROD
 
-    if (!apiKey) {
+    if (!isProduction && !apiKey) {
       setExplanation('⚠ API key not configured')
       setLoading(false)
       return
@@ -42,7 +43,7 @@ export default function SkillExplorer() {
     try {
       const messages: Message[] = [{ role: 'user', content: `Tell me about your experience with ${skill}.` }]
       let full = ''
-      for await (const chunk of streamResponse(messages, SYSTEM, apiKey, model)) {
+      for await (const chunk of streamResponse(messages, SYSTEM, apiKey ?? '', model)) {
         full += chunk
         setExplanation(full)
       }

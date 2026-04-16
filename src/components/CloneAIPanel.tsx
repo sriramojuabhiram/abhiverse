@@ -82,7 +82,7 @@ export function CloneAIPanel() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
 
-  const hasKey = !!import.meta.env.VITE_GROQ_API_KEY
+  const hasKey = import.meta.env.PROD || !!import.meta.env.VITE_GROQ_API_KEY
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })

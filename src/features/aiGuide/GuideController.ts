@@ -7,17 +7,19 @@ Keep responses to exactly 2 short sentences. Sound like a friendly tour guide.
 Never say "as an AI" or mention being a language model.`
 
 export async function generateNarration(sectionPrompt: string): Promise<string> {
+  const isProduction = import.meta.env.PROD
   const apiKey = import.meta.env.VITE_GROQ_API_KEY as string | undefined
   const model = (import.meta.env.VITE_GROQ_MODEL as string | undefined) ?? 'llama-3.3-70b-versatile'
 
-  if (!apiKey) {
+  // In production the edge proxy handles auth; in dev we need the key
+  if (!isProduction && !apiKey) {
     return getFallbackNarration(sectionPrompt)
   }
 
   try {
     const messages: Message[] = [{ role: 'user', content: sectionPrompt }]
     let full = ''
-    for await (const chunk of streamResponse(messages, GUIDE_SYSTEM_PROMPT, apiKey, model)) {
+    for await (const chunk of streamResponse(messages, GUIDE_SYSTEM_PROMPT, apiKey ?? '', model)) {
       full += chunk
     }
     return full || getFallbackNarration(sectionPrompt)

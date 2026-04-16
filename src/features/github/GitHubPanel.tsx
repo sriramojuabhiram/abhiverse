@@ -1,7 +1,20 @@
 // GitHubPanel.tsx — Live GitHub stats panel overlay
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGitHubData } from './useGitHubData'
 import { LANGUAGE_COLORS, type GitHubRepo } from '../../services/githubService'
+
+function useIsMobile() {
+  const [m, setM] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)')
+    setM(mq.matches)
+    const h = (e: MediaQueryListEvent) => setM(e.matches)
+    mq.addEventListener('change', h)
+    return () => mq.removeEventListener('change', h)
+  }, [])
+  return m
+}
 
 interface GitHubPanelProps {
   open: boolean
@@ -10,6 +23,7 @@ interface GitHubPanelProps {
 
 export function GitHubPanel({ open, onClose }: GitHubPanelProps) {
   const { data, loading } = useGitHubData()
+  const isMobile = useIsMobile()
 
   const topLanguages = data
     ? Object.entries(data.languages)
@@ -25,11 +39,11 @@ export function GitHubPanel({ open, onClose }: GitHubPanelProps) {
     <AnimatePresence>
       {open && (
         <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: 30 }}
+          initial={isMobile ? { opacity: 0, y: '100%' } : { opacity: 0, x: 30 }}
+          animate={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, x: 0 }}
+          exit={isMobile ? { opacity: 0, y: '100%' } : { opacity: 0, x: 30 }}
           transition={{ type: 'spring', damping: 24, stiffness: 240 }}
-          style={panelStyle}
+          style={isMobile ? panelStyleMobile : panelStyle}
         >
           {/* Header */}
           <div style={headerStyle}>
@@ -165,6 +179,16 @@ const panelStyle: React.CSSProperties = {
   border: '1px solid rgba(148,163,184,0.25)',
   boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(74,222,128,0.06) inset',
   backdropFilter: 'blur(20px)',
+  fontFamily: "'Cabinet Grotesk', sans-serif",
+}
+
+const panelStyleMobile: React.CSSProperties = {
+  position: 'fixed', inset: 0,
+  zIndex: 75, width: '100%', height: '100%',
+  borderRadius: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden',
+  background: 'linear-gradient(180deg, rgba(16,18,28,0.97), rgba(10,12,20,0.99))',
+  border: 'none',
+  boxShadow: 'none',
   fontFamily: "'Cabinet Grotesk', sans-serif",
 }
 

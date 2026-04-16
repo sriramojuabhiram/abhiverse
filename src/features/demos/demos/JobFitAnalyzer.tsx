@@ -28,8 +28,9 @@ export default function JobFitAnalyzer() {
 
     const apiKey = import.meta.env.VITE_GROQ_API_KEY as string | undefined
     const model = (import.meta.env.VITE_GROQ_MODEL as string | undefined) ?? 'llama-3.3-70b-versatile'
+    const isProduction = import.meta.env.PROD
 
-    if (!apiKey) {
+    if (!isProduction && !apiKey) {
       setResult('⚠ API key not configured')
       return
     }
@@ -40,7 +41,7 @@ export default function JobFitAnalyzer() {
     try {
       const messages: Message[] = [{ role: 'user', content: jd.trim() }]
       let full = ''
-      for await (const chunk of streamResponse(messages, SYSTEM, apiKey, model)) {
+      for await (const chunk of streamResponse(messages, SYSTEM, apiKey ?? '', model)) {
         full += chunk
         setResult(full)
       }

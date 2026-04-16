@@ -85,7 +85,8 @@ export default function ProjectDeepDive() {
 
     const apiKey = import.meta.env.VITE_GROQ_API_KEY as string | undefined
     const model = (import.meta.env.VITE_GROQ_MODEL as string | undefined) ?? 'llama-3.3-70b-versatile'
-    if (!apiKey) { setPartial('⚠ API key not configured'); return }
+    const isProduction = import.meta.env.PROD
+    if (!isProduction && !apiKey) { setPartial('⚠ API key not configured'); return }
 
     const userMsg: Message = { role: 'user', content: text }
     const updated = [...messages, userMsg]
@@ -96,7 +97,7 @@ export default function ProjectDeepDive() {
 
     try {
       let full = ''
-      for await (const chunk of streamResponse(updated, buildSystemPrompt(selectedProject), apiKey, model)) {
+      for await (const chunk of streamResponse(updated, buildSystemPrompt(selectedProject), apiKey ?? '', model)) {
         full += chunk
         setPartial(full)
       }

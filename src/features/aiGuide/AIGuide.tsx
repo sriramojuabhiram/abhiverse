@@ -161,18 +161,23 @@ function SpeechBubble({
   }, [narration])
 
   const isLast = stepIndex === totalSteps - 1
+  const isMobileView = typeof window !== 'undefined' && window.innerWidth <= 768
 
   return (
     <motion.div
       key={stepIndex}
-      initial={{ opacity: 0, x: bubbleSide === 'left' ? -30 : 30, y: 10 }}
+      initial={{ opacity: 0, x: isMobileView ? 0 : (bubbleSide === 'left' ? -30 : 30), y: 10 }}
       animate={{ opacity: 1, x: 0, y: 0 }}
-      exit={{ opacity: 0, x: bubbleSide === 'left' ? -30 : 30, y: 10 }}
+      exit={{ opacity: 0, x: isMobileView ? 0 : (bubbleSide === 'left' ? -30 : 30), y: 10 }}
       transition={{ type: 'spring', damping: 22, stiffness: 240 }}
       style={{
         ...bubbleStyle,
-        left: bubbleSide === 'left' ? 'clamp(16px, 3vw, 36px)' : 'auto',
-        right: bubbleSide === 'right' ? 'clamp(16px, 3vw, 36px)' : 'auto',
+        ...(isMobileView
+          ? { left: '16px', right: '16px', width: 'auto', bottom: '70px' }
+          : {
+              left: bubbleSide === 'left' ? 'clamp(16px, 3vw, 36px)' : 'auto',
+              right: bubbleSide === 'right' ? 'clamp(16px, 3vw, 36px)' : 'auto',
+            }),
       }}
     >
       {/* Header */}
@@ -232,7 +237,8 @@ const offerStyle: React.CSSProperties = {
   background: 'linear-gradient(180deg, rgba(16,18,28,0.96), rgba(10,12,20,0.98))',
   border: '1px solid rgba(148,163,184,0.25)',
   boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(74,222,128,0.08) inset',
-  backdropFilter: 'blur(20px)', textAlign: 'center', maxWidth: '360px',
+  backdropFilter: 'blur(20px)', textAlign: 'center',
+  width: 'min(360px, calc(100vw - 32px))',
   fontFamily: "'Cabinet Grotesk', sans-serif",
 }
 
@@ -253,7 +259,7 @@ const declineBtnStyle: React.CSSProperties = {
 
 const bubbleStyle: React.CSSProperties = {
   position: 'fixed', bottom: '90px',
-  zIndex: 80, width: 'clamp(300px, 35vw, 420px)', borderRadius: '16px',
+  zIndex: 80, width: 'min(420px, calc(100vw - 32px))', borderRadius: '16px',
   background: 'linear-gradient(180deg, rgba(16,18,28,0.96), rgba(10,12,20,0.98))',
   border: '1px solid rgba(148,163,184,0.25)',
   boxShadow: '0 16px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(74,222,128,0.06) inset',
@@ -320,4 +326,5 @@ const finishedStyle: React.CSSProperties = {
   display: 'flex', alignItems: 'center', gap: '10px',
   fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: '14px', color: 'var(--text-2)',
   backdropFilter: 'blur(16px)',
+  width: 'min(360px, calc(100vw - 32px))',
 }

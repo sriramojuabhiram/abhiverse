@@ -1,5 +1,5 @@
 // DemoTerminal.tsx — Container for interactive AI demo panels
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { lazy, Suspense } from 'react'
 
@@ -25,18 +25,31 @@ interface DemoTerminalProps {
   onClose: () => void
 }
 
+function useIsMobile() {
+  const [m, setM] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)')
+    setM(mq.matches)
+    const h = (e: MediaQueryListEvent) => setM(e.matches)
+    mq.addEventListener('change', h)
+    return () => mq.removeEventListener('change', h)
+  }, [])
+  return m
+}
+
 export function DemoTerminal({ open, onClose }: DemoTerminalProps) {
   const [activeDemo, setActiveDemo] = useState<string | null>(null)
+  const isMobile = useIsMobile()
 
   return (
     <AnimatePresence>
       {open && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          initial={isMobile ? { opacity: 0, y: '100%' } : { opacity: 0, scale: 0.95, y: 20 }}
+          animate={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, scale: 1, y: 0 }}
+          exit={isMobile ? { opacity: 0, y: '100%' } : { opacity: 0, scale: 0.95, y: 20 }}
           transition={{ type: 'spring', damping: 24, stiffness: 240 }}
-          style={terminalStyle}
+          style={isMobile ? terminalStyleMobile : terminalStyle}
         >
           {/* Header */}
           <div style={headerStyle}>
@@ -152,4 +165,14 @@ const backBtnStyle: React.CSSProperties = {
   background: 'transparent', border: '1px solid rgba(148,163,184,0.2)',
   color: 'var(--text-3)', cursor: 'pointer',
   fontFamily: "'DM Mono', monospace", fontSize: '11px', fontWeight: 600,
+}
+
+const terminalStyleMobile: React.CSSProperties = {
+  position: 'fixed', inset: 0,
+  zIndex: 75, width: '100%', height: '100%',
+  borderRadius: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden',
+  background: 'linear-gradient(180deg, rgba(16,18,28,0.97), rgba(10,12,20,0.99))',
+  border: 'none',
+  boxShadow: 'none',
+  fontFamily: "'Cabinet Grotesk', sans-serif",
 }

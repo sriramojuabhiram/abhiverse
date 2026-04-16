@@ -11,9 +11,11 @@ export function useAIStream() {
 
   const send = useCallback(async (text: string) => {
     const section = useAppStore.getState().section
+    const isProduction = import.meta.env.PROD
     const apiKey = import.meta.env.VITE_GROQ_API_KEY as string | undefined
     const model = (import.meta.env.VITE_GROQ_MODEL as string | undefined) ?? 'llama-3.3-70b-versatile'
-    if (!apiKey) { setPartial('⚠ VITE_GROQ_API_KEY not set in .env.local'); return }
+    // In production, the edge proxy handles the API key; in dev, we need it locally
+    if (!isProduction && !apiKey) { setPartial('⚠ VITE_GROQ_API_KEY not set in .env.local'); return }
 
     const userMsg: Message = { role: 'user', content: text }
     const updated = [...messages, userMsg]
@@ -27,7 +29,7 @@ export function useAIStream() {
         await new Promise(r => setTimeout(r, retryDelay))
       }
       let full = ''
-      for await (const chunk of streamResponse(updated, buildSystemPrompt(section), apiKey!, model)) {
+      for await (const chunk of streamResponse(updated, buildSystemPrompt(section), apiKey ?? '', model)) {
         full += chunk
         setPartial(full)
       }
