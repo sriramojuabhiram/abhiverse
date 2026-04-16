@@ -56,8 +56,8 @@ export const planets: PlanetSection[] = [
       description:
         'Results-driven AI Software Engineer with 10+ years of enterprise software experience and deep expertise in designing, building, and deploying production-grade AI systems. Proven track record architecting agentic workflows, multi-agent orchestration systems, and LLM-powered automation using LangChain, LangGraph, CrewAI, and AutoGen. Proficient in Python, Go, and Java with strong foundations in microservices, event-driven architecture, and cloud-native deployments on AWS, GCP, and Azure.',
       items: [
-        { label: 'Education', value: 'M.S. in Information Technology — Colorado Technical University, Denver, CO, 2017' },
-        { label: 'Education', value: 'B.S. in Computer Science — Kakatiya Institute of Technology & Science, India, 2012' },
+        { label: 'Masters Degree', value: 'M.S. in Information Technology — Colorado Technical University, Denver, CO, 2017' },
+        { label: 'Bachelors Degree', value: 'B.S. in Computer Science — Kakatiya Institute of Technology & Science, India, 2012' },
         { label: 'Location', value: "O'Fallon, MO" },
       ],
     },

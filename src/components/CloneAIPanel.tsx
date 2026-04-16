@@ -3,6 +3,18 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useAppStore } from '../store/appStore'
 import { useAIStream } from '../ai/useAIStream'
 
+function useIsMobile() {
+  const [m, setM] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)')
+    setM(mq.matches)
+    const h = (e: MediaQueryListEvent) => setM(e.matches)
+    mq.addEventListener('change', h)
+    return () => mq.removeEventListener('change', h)
+  }, [])
+  return m
+}
+
 const SUGGESTIONS = [
   'What makes you different from other .NET devs?',
   'Walk me through your microservices architecture.',
@@ -68,6 +80,7 @@ export function CloneAIPanel() {
   const { messages, partial, loading, send, reset } = useAIStream()
   const [input, setInput] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
+  const isMobile = useIsMobile()
 
   const hasKey = !!import.meta.env.VITE_GROQ_API_KEY
 
@@ -95,30 +108,36 @@ export function CloneAIPanel() {
     <AnimatePresence>
       {aiOpen && (
         <motion.div
-          initial={{ opacity: 0, x: 24, scale: 0.98 }}
-          animate={{ opacity: 1, x: 0, scale: 1 }}
-          exit={{ opacity: 0, x: 20, scale: 0.98 }}
-          transition={{ type: 'spring', damping: 24, stiffness: 220 }}
+          initial={isMobile ? { opacity: 0, y: '100%' } : { opacity: 0, x: 24, scale: 0.98 }}
+          animate={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, x: 0, scale: 1 }}
+          exit={isMobile ? { opacity: 0, y: '100%' } : { opacity: 0, x: 20, scale: 0.98 }}
+          transition={isMobile ? { type: 'spring', damping: 28, stiffness: 260 } : { type: 'spring', damping: 24, stiffness: 220 }}
           style={{
             position: 'fixed',
-            right: 'clamp(16px, 3vw, 36px)',
-            top: 'clamp(86px, 11vh, 132px)',
-            width: 'min(760px, 92vw)',
-            height: 'min(62vh, 620px)',
-            maxHeight: 'calc(100vh - 120px)',
             zIndex: 70,
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
             background: 'linear-gradient(180deg, rgba(16,18,28,0.96), rgba(10,12,20,0.98))',
-            border: '1px solid rgba(148, 163, 184, 0.25)',
-            borderRadius: '20px',
-            boxShadow: '0 20px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(99,182,255,0.08) inset',
+            border: isMobile ? 'none' : '1px solid rgba(148, 163, 184, 0.25)',
+            borderRadius: isMobile ? '0' : '20px',
+            boxShadow: isMobile ? 'none' : '0 20px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(99,182,255,0.08) inset',
+            ...(isMobile
+              ? { inset: 0, width: '100%', height: '100%', maxHeight: '100vh' }
+              : {
+                  right: 'clamp(16px, 3vw, 36px)',
+                  top: 'clamp(86px, 11vh, 132px)',
+                  width: 'min(760px, 92vw)',
+                  height: 'min(62vh, 620px)',
+                  maxHeight: 'calc(100vh - 120px)',
+                }),
           }}
         >
             {/* Header */}
             <div style={{
-              padding: '16px 22px', display: 'flex', alignItems: 'center', gap: '12px',
+              padding: isMobile ? '14px 16px' : '16px 22px',
+              paddingTop: isMobile ? 'calc(14px + env(safe-area-inset-top, 0px))' : '16px',
+              display: 'flex', alignItems: 'center', gap: '12px',
               borderBottom: '1px solid rgba(148,163,184,0.2)',
             }}>
               <div style={{
@@ -154,7 +173,7 @@ export function CloneAIPanel() {
 
             {/* Messages */}
             <div ref={scrollRef} style={{
-              flex: 1, overflowY: 'auto', padding: '18px 22px',
+              flex: 1, overflowY: 'auto', padding: isMobile ? '14px 16px' : '18px 22px',
               display: 'flex', flexDirection: 'column', gap: '12px',
             }}>
               {messages.length === 0 && !partial && (
@@ -205,7 +224,9 @@ export function CloneAIPanel() {
 
             {/* Input */}
             <form onSubmit={submit} style={{
-              padding: '14px 22px', borderTop: '1px solid rgba(148,163,184,0.2)',
+              padding: isMobile ? '12px 16px' : '14px 22px',
+              paddingBottom: isMobile ? 'calc(12px + env(safe-area-inset-bottom, 0px))' : '14px',
+              borderTop: '1px solid rgba(148,163,184,0.2)',
               display: 'flex', gap: '10px',
             }}>
               <input
