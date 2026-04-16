@@ -150,8 +150,8 @@ export function Character({ position }: { position: [number, number, number] }) 
     mixerRef.current?.update(delta)
 
     // Smooth pointer input
-    smooth.current.x += (pointer.x - smooth.current.x) * 0.07
-    smooth.current.y += (pointer.y - smooth.current.y) * 0.07
+    smooth.current.x += (pointer.x - smooth.current.x) * 0.1
+    smooth.current.y += (pointer.y - smooth.current.y) * 0.1
 
     // Zero-gravity floating — visible bob + slow sway
     if (floatRef.current) {
@@ -160,13 +160,15 @@ export function Character({ position }: { position: [number, number, number] }) 
         Math.sin(t * 0.7) * 0.10 +
         Math.sin(t * 1.1) * 0.035
 
-      floatRef.current.rotation.z = Math.sin(t * 0.35) * 0.018
+      // Translate body toward mouse direction
+      floatRef.current.position.x = position[0] + smooth.current.x * 0.4
+      floatRef.current.rotation.z = Math.sin(t * 0.35) * 0.018 - smooth.current.x * 0.06
     }
 
     // Cursor-follow body rotation + pronounced typing wobble
     if (bodyRef.current) {
-      const tgtY =  smooth.current.x * 0.42
-      const tgtX = -smooth.current.y * 0.18
+      const tgtY =  smooth.current.x * 0.7
+      const tgtX = -smooth.current.y * 0.35
 
       // Multi-frequency typing wobble — simulates irregular keystrokes
       const typeWobble =

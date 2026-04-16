@@ -52,7 +52,7 @@ export function Planet({ data, hovered }: PlanetProps) {
 
   useFrame((_state, delta) => {
     if (!groupRef.current) return
-    const speed = data.rotationSpeed * (hovered.current ? 0.3 : 1)
+    const speed = data.rotationSpeed * (hovered.current ? 3 : 1)
     groupRef.current.rotation.y += speed * delta * 60
     if (matRef.current) matRef.current.uniforms.uTime.value += delta
     if (cloudRef.current) cloudRef.current.uniforms.uTime.value += delta

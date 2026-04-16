@@ -1,23 +1,47 @@
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Canvas } from '@react-three/fiber'
 import * as THREE from 'three'
 import { Scene } from './Scene'
 import { planets } from './planetData'
 import { CloneAIPanel } from '../../components/CloneAIPanel'
 import { useAppStore } from '../../store/appStore'
+import { useZoneTracker } from '../../hooks/useZoneTracker'
 import './PlanetaryScene.css'
+
+function useIsMobile() {
+  const [mobile, setMobile] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)')
+    setMobile(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+  return mobile
+}
 
 export function PlanetaryScene() {
   const [section, setSection] = useState(0)
   const setAIOpen = useAppStore((s) => s.setAIOpen)
   const aiOpen = useAppStore((s) => s.aiOpen)
   const triggerGreeting = useAppStore((s) => s.triggerGreeting)
+  const isMobile = useIsMobile()
+
+  const { enter } = useZoneTracker()
+  const [expandedCard, setExpandedCard] = useState<number | null>(null)
 
   const current = planets[section]
   const isAIClone = current?.id === 'ai-clone'
 
+  // Track zone visits
+  useEffect(() => {
+    if (current) enter(current.id)
+  }, [section])
+
   const handleSection = (s: number) => {
     if (s === section) return
+    setAIOpen(false)
+    setExpandedCard(null)
     setSection(s)
   }
 
@@ -26,13 +50,14 @@ export function PlanetaryScene() {
       {/* R3F Canvas */}
       <Canvas
         className="planetary-canvas"
-        shadows
-        camera={{ fov: 50, near: 0.1, far: 200 }}
-        dpr={[1, 2]}
+        shadows={!isMobile}
+        camera={{ fov: isMobile ? 60 : 50, near: 0.1, far: 200 }}
+        dpr={isMobile ? [1, 1.5] : [1, 2]}
         gl={{
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.08,
-          antialias: true,
+          antialias: !isMobile,
+          powerPreference: isMobile ? 'low-power' : 'high-performance',
         }}
       >
         <color attach="background" args={['#020208']} />
@@ -43,7 +68,7 @@ export function PlanetaryScene() {
       {/* Hero header */}
       <header className="planetary-hero">
         <h1>Abhiram.S</h1>
-        <p>Senior .NET Full Stack Developer</p>
+        <p>AI Software Engineer & Agentic Workflow Architect</p>
       </header>
 
       {/* Top tabs navigation */}
@@ -63,40 +88,61 @@ export function PlanetaryScene() {
       {/* Info panel (hides on AI Clone section) */}
       {current && !isAIClone && (
         <div
+          key={current.id}
           className={`info-panel info-panel--${current.panelSide}`}
-          style={{ opacity: 1 }}
         >
-          <span className="info-panel__tag">{current.subtitle}</span>
-          <h2 className="info-panel__heading">{current.content.heading}</h2>
-          <p className="info-panel__desc">{current.content.description}</p>
-          <ul className="info-panel__list">
-            {current.content.items.map((item) => (
-              <li key={item.label}>
-                <strong>{item.label}</strong>
-                <span>{item.value}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="info-panel__inner">
+            <div className="info-panel__badge">{String(section + 1).padStart(2, '0')}</div>
+            <span className="info-panel__tag">{current.subtitle}</span>
+            <h2 className="info-panel__heading">{current.content.heading}</h2>
+            <p className="info-panel__desc">{current.content.description}</p>
+            <ul className="info-panel__list">
+              {current.content.items.map((item, idx) => (
+                <li
+                  key={item.label}
+                  className={expandedCard === idx ? 'expanded' : ''}
+                  onClick={() => setExpandedCard(expandedCard === idx ? null : idx)}
+                >
+                  <strong>{item.label}</strong>
+                  {item.link ? (
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="info-panel__link"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {item.value}
+                    </a>
+                  ) : (
+                    <span>{item.value}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
 
       {/* AI Clone section — open the chat panel */}
       {isAIClone && !aiOpen && (
-        <div className="info-panel info-panel--right" style={{ opacity: 1 }}>
-          <span className="info-panel__tag">Astronaut</span>
-          <h2 className="info-panel__heading">Abhi AI Clone</h2>
-          <p className="info-panel__desc">
-            Chat with Abhi AI clone — powered by Groq and open-source models, trained on my experience, skills, and career.
-          </p>
-          <button
-            className="ai-clone-open-btn"
-            onClick={() => {
-              triggerGreeting()
-              setAIOpen(true)
-            }}
-          >
-            Start Conversation
-          </button>
+        <div className="info-panel info-panel--right">
+          <div className="info-panel__inner">
+            <span className="info-panel__tag">Astronaut</span>
+            <h2 className="info-panel__heading">Abhi AI Clone</h2>
+            <p className="info-panel__desc">
+              Chat with Abhi AI clone — powered by Groq and open-source models, trained on my experience, skills, and career.
+            </p>
+            <button
+              className="ai-clone-open-btn"
+              onClick={() => {
+                triggerGreeting()
+                setAIOpen(true)
+              }}
+            >
+              Start Conversation
+            </button>
+          </div>
         </div>
       )}
 
@@ -117,7 +163,7 @@ export function PlanetaryScene() {
       {/* Scroll hint */}
       {section === 0 && (
         <div className="planetary-scroll-hint">
-          <span>Scroll to explore</span>
+          <span>{isMobile ? 'Swipe to explore' : 'Scroll to explore'}</span>
           <div className="planetary-scroll-hint__arrow" />
         </div>
       )}

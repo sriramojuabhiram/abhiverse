@@ -1,5 +1,9 @@
 # Abhiverse — 3D Portfolio
 
+[![CI](https://github.com/sriramojuabhiram/abhiverse/actions/workflows/ci.yml/badge.svg)](https://github.com/sriramojuabhiram/abhiverse/actions)
+[![Powered by Groq](https://img.shields.io/badge/AI-Groq%20llama--3.3--70b-orange)](https://groq.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 **Abhiram S. · AI Software Engineer & Agentic Workflow Architect**
 
 A first-person navigable 3D portfolio built with React Three Fiber, featuring a real-time AI clone powered by Groq.

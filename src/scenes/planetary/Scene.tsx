@@ -71,6 +71,37 @@ export function Scene({ section, setSection }: SceneProps) {
     return () => canvas.removeEventListener('wheel', handleWheel)
   }, [gl, handleWheel])
 
+  /* Touch swipe navigation */
+  const touchStart = useRef<{ x: number; y: number } | null>(null)
+
+  useEffect(() => {
+    const canvas = gl.domElement
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
+      }
+    }
+    const onTouchEnd = (e: TouchEvent) => {
+      if (!touchStart.current || isAnimating.current || cooldown.current) return
+      const touch = e.changedTouches[0]
+      const dx = touch.clientX - touchStart.current.x
+      const dy = touch.clientY - touchStart.current.y
+      touchStart.current = null
+      // Only trigger on vertical swipes with enough distance
+      if (Math.abs(dy) < 40 || Math.abs(dx) > Math.abs(dy)) return
+      cooldown.current = true
+      setTimeout(() => (cooldown.current = false), 1400)
+      if (dy < 0 && section < planets.length - 1) setSection(section + 1)
+      else if (dy > 0 && section > 0) setSection(section - 1)
+    }
+    canvas.addEventListener('touchstart', onTouchStart, { passive: true })
+    canvas.addEventListener('touchend', onTouchEnd, { passive: true })
+    return () => {
+      canvas.removeEventListener('touchstart', onTouchStart)
+      canvas.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [gl, section, setSection])
+
   /* Keyboard navigation */
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -148,16 +179,48 @@ interface PlanetHitAreaProps {
 function PlanetHitArea({ data, onSelect }: PlanetHitAreaProps) {
   const hovered = useRef(false)
   const scaleRef = useRef<THREE.Group>(null)
+  const glowRef = useRef<THREE.Mesh>(null)
 
   useFrame(() => {
     if (!scaleRef.current) return
-    const target = hovered.current ? 1.08 : 1
-    scaleRef.current.scale.lerp(new THREE.Vector3(target, target, target), 0.08)
+    const target = hovered.current ? 1.15 : 1
+    scaleRef.current.scale.lerp(new THREE.Vector3(target, target, target), 0.06)
+    // Animate glow ring opacity
+    if (glowRef.current) {
+      const mat = glowRef.current.material as THREE.MeshBasicMaterial
+      const targetOpacity = hovered.current ? 0.35 : 0
+      mat.opacity += (targetOpacity - mat.opacity) * 0.08
+    }
   })
 
   return (
     <group ref={scaleRef}>
       <Planet data={data} hovered={hovered} />
+      {/* Hover glow ring */}
+      <mesh
+        ref={glowRef}
+        position={data.position}
+        rotation={[-Math.PI / 2, 0, 0]}
+      >
+        <ringGeometry args={[data.radius * 1.15, data.radius * 1.35, 64]} />
+        <meshBasicMaterial
+          color={data.colors.atmosphere}
+          transparent
+          opacity={0}
+          side={THREE.DoubleSide}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+      {/* Hover point light */}
+      {hovered.current && (
+        <pointLight
+          position={data.position}
+          color={data.colors.atmosphere}
+          intensity={2}
+          distance={6}
+        />
+      )}
       {/* Invisible hit sphere */}
       <mesh
         position={data.position}
@@ -171,7 +234,7 @@ function PlanetHitArea({ data, onSelect }: PlanetHitAreaProps) {
           document.body.style.cursor = 'default'
         }}
       >
-        <sphereGeometry args={[data.radius * 1.3, 16, 16]} />
+        <sphereGeometry args={[data.radius * 1.5, 16, 16]} />
         <meshBasicMaterial visible={false} />
       </mesh>
     </group>
@@ -179,17 +242,8 @@ function PlanetHitArea({ data, onSelect }: PlanetHitAreaProps) {
 }
 
 function AstronautHitArea({ data, onSelect }: PlanetHitAreaProps) {
-  const scaleRef = useRef<THREE.Group>(null)
-  const hovered = useRef(false)
-
-  useFrame(() => {
-    if (!scaleRef.current) return
-    const target = hovered.current ? 1.06 : 1
-    scaleRef.current.scale.lerp(new THREE.Vector3(target, target, target), 0.06)
-  })
-
   return (
-    <group ref={scaleRef}>
+    <group>
       <Character position={data.position} />
       <TechOrbs center={data.position} />
       {/* Cinematic character lighting */}
@@ -205,18 +259,10 @@ function AstronautHitArea({ data, onSelect }: PlanetHitAreaProps) {
       <pointLight position={[data.position[0] - 1.2, data.position[1] + 2.2, data.position[2] - 2.5]} intensity={1.1} color="#c8d8ff" distance={7} />
       <pointLight position={[data.position[0] - 1.9, data.position[1] + 0.5, data.position[2] + 1.8]} intensity={0.65} color="#6e9bff" distance={9} />
       <pointLight position={[data.position[0], data.position[1] + 1.9, data.position[2] - 1.7]} intensity={0.52} color="#8d8bff" distance={9} />
-      {/* Invisible hit area */}
+      {/* Click-only hit area — no hover reaction */}
       <mesh
         position={data.position}
         onClick={onSelect}
-        onPointerOver={() => {
-          hovered.current = true
-          document.body.style.cursor = 'pointer'
-        }}
-        onPointerOut={() => {
-          hovered.current = false
-          document.body.style.cursor = 'default'
-        }}
       >
         <sphereGeometry args={[2, 16, 16]} />
         <meshBasicMaterial visible={false} />

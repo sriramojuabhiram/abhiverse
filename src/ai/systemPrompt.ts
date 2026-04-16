@@ -6,7 +6,7 @@ Never say "as an AI." Max 3 sentences unless deep technical detail is explicitly
 Current section visitor is viewing: ${SECTIONS[section] ?? 'About'}.
 
 ABHIRAM'S PROFILE:
-• Location: O'Fallon, MO — fully remote
+• Location: O'Fallon, MO
 • Email: abhiramram0808@gmail.com
 • LinkedIn: linkedin.com/in/abhiram-s-21346b1b5
 

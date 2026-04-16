@@ -24,7 +24,7 @@ export interface PlanetSection {
   content: {
     heading: string
     description: string
-    items: Array<{ label: string; value: string }>
+    items: Array<{ label: string; value: string; link?: string }>
   }
 }
 
@@ -35,7 +35,7 @@ export const planets: PlanetSection[] = [
     subtitle: 'Home World',
     type: 'earth',
     position: [0, 0, 0],
-    radius: 1.5,
+    radius: 1.3,
     rotationSpeed: 0.003,
     tilt: 0.41,
     colors: {
@@ -48,16 +48,17 @@ export const planets: PlanetSection[] = [
     hasClouds: true,
     hasRings: false,
     noiseScale: 7.0,
-    cameraPosition: [0, 0.5, 5],
-    cameraLookAt: [0, 0, 0],
+    cameraPosition: [-3, 0.6, 4.5],
+    cameraLookAt: [-3, 0, 0],
     panelSide: 'left',
     content: {
       heading: 'About Me',
       description:
         'Results-driven AI Software Engineer with 10+ years of enterprise software experience and deep expertise in designing, building, and deploying production-grade AI systems. Proven track record architecting agentic workflows, multi-agent orchestration systems, and LLM-powered automation using LangChain, LangGraph, CrewAI, and AutoGen. Proficient in Python, Go, and Java with strong foundations in microservices, event-driven architecture, and cloud-native deployments on AWS, GCP, and Azure.',
       items: [
-        { label: 'Education', value: 'B.Tech Computer Science — Vaagdevi College of Engineering, Warangal, 2013' },
-        { label: 'Location', value: "O'Fallon, MO (Remote)" },
+        { label: 'Education', value: 'M.S. in Information Technology — Colorado Technical University, Denver, CO, 2017' },
+        { label: 'Education', value: 'B.S. in Computer Science — Kakatiya Institute of Technology & Science, India, 2012' },
+        { label: 'Location', value: "O'Fallon, MO" },
       ],
     },
   },
@@ -67,7 +68,7 @@ export const planets: PlanetSection[] = [
     subtitle: 'Gas Giant',
     type: 'gas',
     position: [6, 1, -8],
-    radius: 1.8,
+    radius: 1.4,
     rotationSpeed: 0.002,
     tilt: 0.05,
     colors: {
@@ -80,8 +81,8 @@ export const planets: PlanetSection[] = [
     hasClouds: false,
     hasRings: false,
     noiseScale: 5.0,
-    cameraPosition: [6, 1.5, -3.5],
-    cameraLookAt: [6, 1, -8],
+    cameraPosition: [9, 1.5, -4],
+    cameraLookAt: [9, 1, -8],
     panelSide: 'right',
     content: {
       heading: 'Technical Skills',
@@ -103,7 +104,7 @@ export const planets: PlanetSection[] = [
     subtitle: 'Ringed World',
     type: 'ice',
     position: [-5, -1, -16],
-    radius: 1.5,
+    radius: 1.3,
     rotationSpeed: 0.0018,
     tilt: 0.47,
     colors: {
@@ -117,8 +118,8 @@ export const planets: PlanetSection[] = [
     hasRings: true,
     ringColor: '#7c9fd4',
     noiseScale: 6.0,
-    cameraPosition: [-5, -0.5, -12],
-    cameraLookAt: [-5, -1, -16],
+    cameraPosition: [-8, -0.5, -12.5],
+    cameraLookAt: [-8, -1, -16],
     panelSide: 'left',
     content: {
       heading: 'Career Journey',
@@ -153,8 +154,8 @@ export const planets: PlanetSection[] = [
     hasClouds: false,
     hasRings: false,
     noiseScale: 8.0,
-    cameraPosition: [4, 2.5, -20],
-    cameraLookAt: [4, 2, -24],
+    cameraPosition: [7, 2.5, -20.5],
+    cameraLookAt: [7, 2, -24],
     panelSide: 'right',
     content: {
       heading: 'Key Projects',
@@ -186,16 +187,16 @@ export const planets: PlanetSection[] = [
     hasClouds: false,
     hasRings: false,
     noiseScale: 6.0,
-    cameraPosition: [-2, 0, -28.5],
-    cameraLookAt: [-2, -0.5, -32],
+    cameraPosition: [-5, 0, -29],
+    cameraLookAt: [-5, -0.5, -32],
     panelSide: 'left',
     content: {
       heading: 'Get In Touch',
       description: "Open to new opportunities and collaborations. Let's build something great together.",
       items: [
-        { label: 'Email', value: 'abhiramram0808@gmail.com' },
-        { label: 'LinkedIn', value: 'linkedin.com/in/abhiram-s-21346b1b5' },
-        { label: 'GitHub', value: 'github.com/sriramojuabhiram' },
+        { label: 'Email', value: 'abhiramram0808@gmail.com', link: 'mailto:abhiramram0808@gmail.com' },
+        { label: 'LinkedIn', value: 'linkedin.com/in/abhiram-s-21346b1b5', link: 'https://linkedin.com/in/abhiram-s-21346b1b5' },
+        { label: 'GitHub', value: 'github.com/sriramojuabhiram', link: 'https://github.com/sriramojuabhiram' },
       ],
     },
   },
@@ -205,7 +206,7 @@ export const planets: PlanetSection[] = [
     subtitle: 'Astronaut',
     type: 'nebula',
     position: [3, 0.5, -40],
-    radius: 1.4,
+    radius: 0.85,
     rotationSpeed: 0.0015,
     tilt: 0.2,
     colors: {
