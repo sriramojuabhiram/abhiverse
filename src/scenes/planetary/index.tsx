@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import * as THREE from 'three'
 import { Scene } from './Scene'
@@ -6,7 +6,14 @@ import { planets } from './planetData'
 import { CloneAIPanel } from '../../components/CloneAIPanel'
 import { useAppStore } from '../../store/appStore'
 import { useZoneTracker } from '../../hooks/useZoneTracker'
+import { AIGuide } from '../../features/aiGuide/AIGuide'
+import { CinematicOverlay } from '../../features/cinematic/CinematicOverlay'
+import { HUD } from '../../features/ui/HUD'
 import './PlanetaryScene.css'
+
+// Lazy-loaded feature panels for performance
+const GitHubPanel = lazy(() => import('../../features/github/GitHubPanel').then(m => ({ default: m.GitHubPanel })))
+const DemoTerminal = lazy(() => import('../../features/demos/DemoTerminal').then(m => ({ default: m.DemoTerminal })))
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(false)
@@ -29,9 +36,28 @@ export function PlanetaryScene() {
 
   const { enter } = useZoneTracker()
   const [expandedCard, setExpandedCard] = useState<number | null>(null)
+  const [ghPanelOpen, setGhPanelOpen] = useState(false)
+  const [demoPanelOpen, setDemoPanelOpen] = useState(false)
 
   const current = planets[section]
   const isAIClone = current?.id === 'ai-clone'
+
+  // Close all feature panels
+  const closeAllPanels = useCallback(() => {
+    setAIOpen(false)
+    setGhPanelOpen(false)
+    setDemoPanelOpen(false)
+  }, [setAIOpen])
+
+  const openGitHub = useCallback(() => {
+    closeAllPanels()
+    setGhPanelOpen(true)
+  }, [closeAllPanels])
+
+  const openDemos = useCallback(() => {
+    closeAllPanels()
+    setDemoPanelOpen(true)
+  }, [closeAllPanels])
 
   // Track zone visits
   useEffect(() => {
@@ -44,6 +70,10 @@ export function PlanetaryScene() {
     setExpandedCard(null)
     setSection(s)
   }
+
+  const handleGuideNavigate = useCallback((s: number) => {
+    handleSection(s)
+  }, [section])
 
   return (
     <div className="planetary-root">
@@ -68,7 +98,7 @@ export function PlanetaryScene() {
       {/* Hero header */}
       <header className="planetary-hero">
         <h1>Abhiram.S</h1>
-        <p>AI Software Engineer & Agentic Workflow Architect</p>
+        <p>Senior Full Stack .NET Developer | Angular & React | AI-First Engineering | Azure / AWS</p>
       </header>
 
       {/* Top tabs navigation */}
@@ -136,6 +166,7 @@ export function PlanetaryScene() {
             <button
               className="ai-clone-open-btn"
               onClick={() => {
+                closeAllPanels()
                 triggerGreeting()
                 setAIOpen(true)
               }}
@@ -175,6 +206,26 @@ export function PlanetaryScene() {
 
       {/* AI Chat Panel (overlay) */}
       <CloneAIPanel />
+
+      {/* AI Guide Agent — tour system */}
+      <AIGuide onNavigate={handleGuideNavigate} />
+
+      {/* Cinematic flythrough overlay */}
+      <CinematicOverlay />
+
+      {/* HUD — control panel */}
+      <HUD
+        onOpenGitHub={() => { if (ghPanelOpen) { setGhPanelOpen(false) } else { openGitHub() } }}
+        onOpenDemos={() => { if (demoPanelOpen) { setDemoPanelOpen(false) } else { openDemos() } }}
+      />
+
+      {/* Lazy-loaded feature panels */}
+      <Suspense fallback={null}>
+        <GitHubPanel open={ghPanelOpen} onClose={() => setGhPanelOpen(false)} />
+      </Suspense>
+      <Suspense fallback={null}>
+        <DemoTerminal open={demoPanelOpen} onClose={() => setDemoPanelOpen(false)} />
+      </Suspense>
     </div>
   )
 }

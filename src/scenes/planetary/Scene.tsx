@@ -10,6 +10,7 @@ import { TechOrbs } from './Astronaut'
 import { Character } from './Character'
 import { StarsWithShootingStars } from './Stars'
 import { planets } from './planetData'
+import { useCinematicCamera, useCinematicStore } from '../../features/cinematic/CinematicController'
 
 interface SceneProps {
   section: number
@@ -20,9 +21,21 @@ export function Scene({ section, setSection }: SceneProps) {
   const { camera, gl } = useThree()
   const lookTarget = useRef(new THREE.Vector3())
   const isAnimating = useRef(false)
+  const cinematicActive = useCinematicStore((s) => s.active)
+
+  // Cinematic camera flythrough — takes over camera when active
+  useCinematicCamera(() => {
+    // On cinematic complete, snap camera back to current section
+    const p = planets[section]
+    if (p) {
+      camera.position.set(...p.cameraPosition)
+      lookTarget.current.set(...p.cameraLookAt)
+    }
+  }, setSection)
 
   /* Camera transition on section change */
   useEffect(() => {
+    if (cinematicActive) return // Don't interfere with cinematic
     const p = planets[section]
     if (!p) return
     isAnimating.current = true
@@ -45,10 +58,11 @@ export function Scene({ section, setSection }: SceneProps) {
         isAnimating.current = false
       },
     })
-  }, [section, camera])
+  }, [section, camera, cinematicActive])
 
-  /* Look at target every frame */
+  /* Look at target every frame (skip during cinematic — it controls camera directly) */
   useFrame(() => {
+    if (cinematicActive) return
     camera.lookAt(lookTarget.current)
   })
 
@@ -56,13 +70,13 @@ export function Scene({ section, setSection }: SceneProps) {
   const cooldown = useRef(false)
   const handleWheel = useCallback(
     (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) < 30 || cooldown.current || isAnimating.current) return
+      if (cinematicActive || Math.abs(e.deltaY) < 30 || cooldown.current || isAnimating.current) return
       cooldown.current = true
       setTimeout(() => (cooldown.current = false), 1400)
       if (e.deltaY > 0 && section < planets.length - 1) setSection(section + 1)
       else if (e.deltaY < 0 && section > 0) setSection(section - 1)
     },
-    [section, setSection],
+    [section, setSection, cinematicActive],
   )
 
   useEffect(() => {
@@ -105,7 +119,7 @@ export function Scene({ section, setSection }: SceneProps) {
   /* Keyboard navigation */
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (isAnimating.current) return
+      if (isAnimating.current || cinematicActive) return
       if ((e.key === 'ArrowDown' || e.key === 'ArrowRight') && section < planets.length - 1)
         setSection(section + 1)
       else if ((e.key === 'ArrowUp' || e.key === 'ArrowLeft') && section > 0)

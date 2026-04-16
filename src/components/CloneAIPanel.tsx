@@ -114,7 +114,7 @@ export function CloneAIPanel() {
           transition={isMobile ? { type: 'spring', damping: 28, stiffness: 260 } : { type: 'spring', damping: 24, stiffness: 220 }}
           style={{
             position: 'fixed',
-            zIndex: 70,
+            zIndex: 75,
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
@@ -127,9 +127,8 @@ export function CloneAIPanel() {
               : {
                   right: 'clamp(16px, 3vw, 36px)',
                   top: 'clamp(86px, 11vh, 132px)',
-                  width: 'min(760px, 92vw)',
-                  height: 'min(62vh, 620px)',
-                  maxHeight: 'calc(100vh - 120px)',
+                  bottom: 'clamp(20px, 4vh, 40px)',
+                  width: 'clamp(360px, 38vw, 520px)',
                 }),
           }}
         >
