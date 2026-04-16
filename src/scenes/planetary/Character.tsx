@@ -186,13 +186,13 @@ export function Character({ position }: { position: [number, number, number] }) 
         Math.sin(t * 0.55) * 0.005
     }
 
-    // Screen glow pulsing — bright keystroke-synced flicker
+    // Screen glow pulsing — subtle keystroke-synced flicker
     if (screenRef.current) {
       screenRef.current.intensity =
-        1.6 +
-        Math.sin(t * 5.3) * 0.2 +
-        Math.sin(t * 11.9) * 0.12 +
-        Math.sin(t * 19.7) * 0.06
+        0.9 +
+        Math.sin(t * 5.3) * 0.12 +
+        Math.sin(t * 11.9) * 0.06 +
+        Math.sin(t * 19.7) * 0.03
     }
   })
 
@@ -212,9 +212,9 @@ export function Character({ position }: { position: [number, number, number] }) 
           metrics.min.y + metrics.size.y * 0.50,
           metrics.center.z + metrics.size.z * 0.48,
         ]}
-        intensity={1.6}
+        intensity={0.9}
         color="#3a7ee8"
-        distance={2.2}
+        distance={1.8}
         decay={2}
       />
 

@@ -7,7 +7,61 @@ const SUGGESTIONS = [
   'What makes you different from other .NET devs?',
   'Walk me through your microservices architecture.',
   'Tell me about your work at Tesla.',
+  'Can I get your resume?',
 ]
+
+/* Renders message content, replacing [RESUME_DOWNLOAD] with a styled download button */
+function MessageContent({ text }: { text: string }) {
+  const MARKER = '[RESUME_DOWNLOAD]'
+  if (!text.includes(MARKER)) return <>{text}</>
+
+  const parts = text.split(MARKER)
+  return (
+    <>
+      {parts.map((part, i) => (
+        <span key={i}>
+          {part}
+          {i < parts.length - 1 && (
+            <a
+              href="/resume.pdf"
+              download="Abhiram_S_Resume.pdf"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                margin: '8px 0',
+                padding: '10px 18px',
+                borderRadius: '10px',
+                background: 'linear-gradient(135deg, rgba(34,197,94,0.35), rgba(74,222,128,0.2))',
+                border: '1px solid rgba(74,222,128,0.5)',
+                color: '#4ade80',
+                fontFamily: "'DM Mono', monospace",
+                fontSize: '12px',
+                fontWeight: 700,
+                letterSpacing: '0.06em',
+                textDecoration: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseOver={e => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(34,197,94,0.55), rgba(74,222,128,0.4))'
+                e.currentTarget.style.color = '#eeffee'
+                e.currentTarget.style.boxShadow = '0 0 16px rgba(74,222,128,0.3)'
+              }}
+              onMouseOut={e => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(34,197,94,0.35), rgba(74,222,128,0.2))'
+                e.currentTarget.style.color = '#4ade80'
+                e.currentTarget.style.boxShadow = 'none'
+              }}
+            >
+              📄 Download Resume (PDF)
+            </a>
+          )}
+        </span>
+      ))}
+    </>
+  )
+}
 
 export function CloneAIPanel() {
   const { aiOpen, setAIOpen } = useAppStore()
@@ -130,7 +184,7 @@ export function CloneAIPanel() {
                   fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: '14px',
                   lineHeight: 1.6, color: 'var(--text-2)',
                 }}>
-                  {m.content}
+                  <MessageContent text={m.content} />
                 </div>
               ))}
               {partial && (
@@ -140,7 +194,7 @@ export function CloneAIPanel() {
                   fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: '14px',
                   lineHeight: 1.6, color: 'var(--text-2)',
                 }}>
-                  {partial}<span style={{
+                  <MessageContent text={partial} /><span style={{
                     display: 'inline-block', width: '6px', height: '14px',
                     background: 'var(--accent)', marginLeft: '2px',
                     animation: 'pulse-dot 1s infinite',

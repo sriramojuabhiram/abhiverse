@@ -19,14 +19,21 @@ type TechItem = {
 }
 
 const TECH_ITEMS: TechItem[] = [
-  { icon: '/tech-icons/react.svg', tint: '#66d8ff', radius: 1.55, speed: 0.24, offset: 0.1, height: 0.3 },
-  { icon: '/tech-icons/docker.svg', tint: '#84c4ff', radius: 1.75, speed: 0.18, offset: 0.9, height: 0.82 },
-  { icon: '/tech-icons/aws.svg', tint: '#ffc26f', radius: 1.95, speed: 0.14, offset: 1.7, height: 1.12 },
-  { icon: '/tech-icons/openai.svg', tint: '#4ade80', radius: 1.85, speed: 0.22, offset: 2.4, height: 0.58 },
-  { icon: '/tech-icons/groq.svg', tint: '#b3f7ff', radius: 2.05, speed: 0.12, offset: 3.1, height: 1.35 },
-  { icon: '/tech-icons/kubernetes.svg', tint: '#95a3ff', radius: 1.72, speed: 0.2, offset: 3.7, height: 0.2 },
-  { icon: '/tech-icons/azure.svg', tint: '#7ab7ff', radius: 1.9, speed: 0.16, offset: 4.3, height: 0.72 },
-  { icon: '/tech-icons/redis.svg', tint: '#ff8ea2', radius: 1.65, speed: 0.19, offset: 5.2, height: 1.02 },
+  { icon: '/tech-icons/python.svg',     tint: '#ffd43b', radius: 1.55, speed: 0.22, offset: 0.0,  height: 0.55 },
+  { icon: '/tech-icons/langchain.svg',  tint: '#4ade80', radius: 1.80, speed: 0.17, offset: 0.42, height: 1.10 },
+  { icon: '/tech-icons/openai.svg',     tint: '#10b981', radius: 1.65, speed: 0.20, offset: 0.84, height: 0.30 },
+  { icon: '/tech-icons/pytorch.svg',    tint: '#ee4c2c', radius: 1.92, speed: 0.14, offset: 1.26, height: 0.85 },
+  { icon: '/tech-icons/fastapi.svg',    tint: '#009688', radius: 1.72, speed: 0.19, offset: 1.68, height: 1.30 },
+  { icon: '/tech-icons/csharp.svg',     tint: '#b38dff', radius: 2.05, speed: 0.15, offset: 2.09, height: 0.42 },
+  { icon: '/tech-icons/dotnet.svg',     tint: '#8ea0ff', radius: 1.62, speed: 0.21, offset: 2.51, height: 1.18 },
+  { icon: '/tech-icons/angular.svg',    tint: '#ff6a7a', radius: 1.88, speed: 0.16, offset: 2.93, height: 0.62 },
+  { icon: '/tech-icons/react.svg',      tint: '#66d8ff', radius: 1.75, speed: 0.18, offset: 3.35, height: 0.95 },
+  { icon: '/tech-icons/typescript.svg', tint: '#3178c6', radius: 2.00, speed: 0.13, offset: 3.77, height: 0.35 },
+  { icon: '/tech-icons/docker.svg',     tint: '#84c4ff', radius: 1.68, speed: 0.20, offset: 4.19, height: 1.25 },
+  { icon: '/tech-icons/aws.svg',        tint: '#ffc26f', radius: 1.95, speed: 0.14, offset: 4.61, height: 0.50 },
+  { icon: '/tech-icons/kubernetes.svg', tint: '#95a3ff', radius: 1.78, speed: 0.17, offset: 5.03, height: 1.05 },
+  { icon: '/tech-icons/groq.svg',       tint: '#b3f7ff', radius: 2.08, speed: 0.12, offset: 5.45, height: 0.72 },
+  { icon: '/tech-icons/azure.svg',      tint: '#7ab7ff', radius: 1.60, speed: 0.23, offset: 5.87, height: 1.38 },
 ]
 
 export function TechOrbs({ center }: { center: [number, number, number] }) {

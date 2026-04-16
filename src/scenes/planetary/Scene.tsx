@@ -8,7 +8,7 @@ import { BlendFunction } from 'postprocessing'
 import { Planet } from './Planet'
 import { TechOrbs } from './Astronaut'
 import { Character } from './Character'
-import { Stars } from './Stars'
+import { StarsWithShootingStars } from './Stars'
 import { planets } from './planetData'
 
 interface SceneProps {
@@ -95,22 +95,22 @@ export function Scene({ section, setSection }: SceneProps) {
 
   return (
     <>
-      <Stars />
-      <ambientLight intensity={0.08} color="#c4c8f8" />
-      <Environment preset="warehouse" environmentIntensity={1.25} />
-      <hemisphereLight intensity={0.2} color="#d0d4ff" groundColor="#12141e" />
+      <StarsWithShootingStars />
+      <ambientLight intensity={0.04} color="#c4c8f8" />
+      <Environment preset="warehouse" environmentIntensity={0.35} />
+      <hemisphereLight intensity={0.12} color="#d0d4ff" groundColor="#12141e" />
       <directionalLight
         position={[11, 8, 6]}
-        intensity={2.2}
+        intensity={1.1}
         color="#fff4e8"
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
         shadow-bias={-0.0001}
       />
-      <directionalLight position={[-7, 3, -5]} intensity={0.6} color="#818cf8" />
-      <pointLight position={[5, 6, -36]} intensity={0.7} color="#fbbf24" distance={22} />
-      <pointLight position={[0, 10, -18]} intensity={0.55} color="#a78bfa" distance={60} />
+      <directionalLight position={[-7, 3, -5]} intensity={0.35} color="#818cf8" />
+      <pointLight position={[5, 6, -36]} intensity={0.5} color="#fbbf24" distance={22} />
+      <pointLight position={[0, 10, -18]} intensity={0.35} color="#a78bfa" distance={60} />
       {planets.map((p) => (
         p.id === 'ai-clone' ? (
           <AstronautHitArea
@@ -129,12 +129,12 @@ export function Scene({ section, setSection }: SceneProps) {
       <EffectComposer multisampling={4}>
         <Bloom
           mipmapBlur
-          intensity={0.32}
-          luminanceThreshold={0.75}
-          luminanceSmoothing={0.18}
+          intensity={0.4}
+          luminanceThreshold={0.55}
+          luminanceSmoothing={0.25}
         />
-        <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} opacity={0.06} />
-        <Vignette eskil={false} offset={0.16} darkness={0.55} />
+        <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} opacity={0.08} />
+        <Vignette eskil={false} offset={0.12} darkness={0.7} />
       </EffectComposer>
     </>
   )

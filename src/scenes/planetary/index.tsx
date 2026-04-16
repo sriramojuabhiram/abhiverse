@@ -36,7 +36,7 @@ export function PlanetaryScene() {
         }}
       >
         <color attach="background" args={['#020208']} />
-        <fog attach="fog" args={['#020208', 30, 90]} />
+        <fog attach="fog" args={['#020208', 60, 180]} />
         <Scene section={section} setSection={handleSection} />
       </Canvas>
 
